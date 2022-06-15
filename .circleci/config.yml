@@ -24,7 +24,7 @@ jobs:
           command: |
             echo "checking git config on ~"
             [ -f ~/.config ]
-      - run: |
+      - run:
           name: update git config
           command: |
             git config --global core.compression 9
