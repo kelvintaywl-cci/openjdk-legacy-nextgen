@@ -11,6 +11,7 @@ jobs:
     steps:
       - checkout
       - run: whoami
+      - run: pwd
       - run:
           name: check git config in curdir exists
           when: always
