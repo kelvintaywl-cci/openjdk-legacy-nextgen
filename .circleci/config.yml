@@ -24,6 +24,12 @@ jobs:
           command: |
             echo "checking git config on ~"
             [ -f ~/.config ]
+      - run: |
+          name: update git config
+          command: |
+            git config --global core.compression 9
+            sudo chmod 755 /home/circleci/.config
+          when: always
 
 workflows:
   main:
