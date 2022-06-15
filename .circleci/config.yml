@@ -1,0 +1,34 @@
+version: 2.1
+
+jobs:
+  jdk:
+    parameters:
+      img:
+        type: string
+    resource_class: small
+    docker:
+      - image: << parameters.img >>
+    steps:
+      - run: whoami
+      - run:
+          name: check git config in curdir exists
+          when: always
+          command: |
+            echo "checking git config on current dir"
+            [ -f .config ]
+      - run:
+          name: check git config in user exists
+          when: always
+          command: |
+            echo "checking git config on ~"
+            [ -f ~/.config ]
+
+workflows:
+  main:
+    jobs:
+      - jdk:
+          matrix:
+            parameters:
+              img:
+                - cimg/openjdk:11.0.3
+                - circleci/openjdk:11.0.3-jdk-stretch
