@@ -9,6 +9,7 @@ jobs:
     docker:
       - image: << parameters.img >>
     steps:
+      - checkout
       - run: whoami
       - run:
           name: check git config in curdir exists
