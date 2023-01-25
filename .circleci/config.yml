@@ -15,7 +15,10 @@ commands:
       - run: |
           dl_URL="https://services.gradle.org/distributions/gradle-<< parameters.version >>-bin.zip"
           curl -sSL --fail --retry 3 $dl_URL -o gradle.zip
-          sudo unzip -d /opt gradle.zip && rm gradle.zip && sudo ln -s /opt/gradle-* /opt/gradle
+          sudo unzip -d /opt gradle.zip && rm gradle.zip
+          # remove previous symlink
+          sudo rm /opt/gradle
+          sudo ln -s /opt/gradle-<< parameters.version >> /opt/gradle
 
 jobs:
   upgrade-gradle:
