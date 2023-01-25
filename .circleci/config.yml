@@ -20,9 +20,14 @@ commands:
 jobs:
   upgrade-gradle:
     docker:
-      - image:
-  steps:
-    - inspect-gradle
-    - install-gradle:
-        version: 7.6
-    - inspect-gradle
+      - image: cimg/openjdk:8.0-node
+    steps:
+      - inspect-gradle
+      - install-gradle:
+          version: "7.6"
+      - inspect-gradle
+
+workflows:
+  main:
+    jobs:
+      - upgrade-gradle
