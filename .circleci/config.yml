@@ -1,42 +1,28 @@
 version: 2.1
 
-jobs:
-  jdk:
-    parameters:
-      img:
-        type: string
-    resource_class: small
-    docker:
-      - image: << parameters.img >>
+commands:
+  inspect-gradle:
     steps:
-      - checkout
-      - run: whoami
-      - run: pwd
-      - run:
-          name: check git config in curdir exists
-          when: always
-          command: |
-            echo "checking git config on current dir"
-            [ -f .config ]
-      - run:
-          name: check git config in user exists
-          when: always
-          command: |
-            echo "checking git config on ~"
-            [ -f ~/.config ]
-      - run:
-          name: update git config
-          command: |
-            git config --global core.compression 9
-            sudo chmod 755 /home/circleci/.config
-          when: always
+      - run: which gradle
+      - run: gradle --version
+  install-gradle:
+    parameters:
+      version:
+        type: string
+        description: See https://gradle.org/releases/
+    steps:
+      # see https://github.com/CircleCI-Public/cimg-openjdk/blob/00a075accf7468f5cc6b12687f74f4e8b80bb146/8.0/Dockerfile#L41-L48
+      - run: |
+          dl_URL="https://services.gradle.org/distributions/gradle-<< parameters.version >>-bin.zip"
+          curl -sSL --fail --retry 3 $dl_URL -o gradle.zip
+          sudo unzip -d /opt gradle.zip && rm gradle.zip && sudo ln -s /opt/gradle-* /opt/gradle
 
-workflows:
-  main:
-    jobs:
-      - jdk:
-          matrix:
-            parameters:
-              img:
-                - cimg/openjdk:11.0.3
-                - circleci/openjdk:11.0.3-jdk-stretch
+jobs:
+  upgrade-gradle:
+    docker:
+      - image:
+  steps:
+    - inspect-gradle
+    - install-gradle:
+        version: 7.6
+    - inspect-gradle
